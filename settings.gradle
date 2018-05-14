@@ -1,1 +1,1 @@
-include ':app', ':Xsb_Processor', ':lib_annotation'
+include ':app', ':xsb-processor', ':xsb-annotation'

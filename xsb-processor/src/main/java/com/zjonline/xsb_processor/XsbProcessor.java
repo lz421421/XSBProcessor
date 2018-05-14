@@ -28,7 +28,6 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -37,7 +36,6 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 @AutoService(Processor.class)
 public class XsbProcessor extends AbstractProcessor {
 
-    private Types typeUtils;
     private Filer filer;
     private Elements elementUtils;
     private Trees trees;
@@ -54,7 +52,6 @@ public class XsbProcessor extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment env) {
         super.init(env);
         elementUtils = env.getElementUtils();
-        typeUtils = env.getTypeUtils();
         filer = env.getFiler();
         try {
             trees = Trees.instance(processingEnv);
@@ -266,10 +263,6 @@ public class XsbProcessor extends AbstractProcessor {
             }
         }
         return null;
-    }
-
-    public static void println(String name, String msg) {
-        System.out.println("----------" + name + "-------->" + msg);
     }
 
 }

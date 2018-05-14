@@ -26,12 +26,15 @@ dependencies {
 }
 
 
-group   = 'com.xsb.plugin'
-version = '1.0.0'
 
 uploadArchives {
     repositories {
         mavenDeployer {
+            //设置插件的GAV参数
+            pom.groupId = 'com.xsb.plugin'
+            pom.artifactId = 'xsb-ann-plugin'
+            pom.version = '1.0.1'
+            //文件发布到下面目录
             repository(url: uri("../repository"))
         }
     }

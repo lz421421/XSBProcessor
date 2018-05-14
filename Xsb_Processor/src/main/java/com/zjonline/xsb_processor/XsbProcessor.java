@@ -215,7 +215,7 @@ public class XsbProcessor extends AbstractProcessor {
                 .endControlFlow()
                 .endControlFlow()
                 .endControlFlow()
-
+                .addStatement("activity.getClass().getMethod(\"setTitleView\",View.class).invoke(activity,titleView)")
                 .endControlFlow().beginControlFlow("catch (java.lang.Exception e) ").addStatement(" e.printStackTrace()").endControlFlow()
                 .build();
     }

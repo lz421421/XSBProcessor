@@ -1,6 +1,6 @@
 apply plugin: 'java-library'
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.lz421421.xsb-layoutann'
+group='com.github.lz421421'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

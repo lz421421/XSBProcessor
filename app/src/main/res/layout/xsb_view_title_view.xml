@@ -3,10 +3,10 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:id="@+id/fl_view_title"
              android:layout_width="match_parent"
-             android:paddingTop="24dp"
              android:layout_height="72dp"
              android:background="#0ff034"
-             android:elevation="6dp">
+             android:elevation="6dp"
+             android:paddingTop="24dp">
 
     <LinearLayout
         android:id="@+id/ll_left"
@@ -55,10 +55,10 @@
             android:visibility="gone"/>
 
         <ImageButton
-            android:visibility="gone"
             android:id="@+id/imb_right_two"
             android:layout_width="45dp"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/tv_right_two"

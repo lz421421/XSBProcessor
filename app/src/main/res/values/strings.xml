@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">XsbProcessor</string>
+    <string name="hello">你好</string>
 </resources>

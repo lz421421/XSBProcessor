@@ -2,6 +2,7 @@ package com.zjonline.xsb_processor;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
@@ -30,10 +31,12 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
+
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @AutoService(Processor.class)
-public class XsbProcessor extends AbstractProcessor{
+public class XsbProcessor extends AbstractProcessor {
 
     private Types typeUtils;
     private Filer filer;
@@ -45,7 +48,8 @@ public class XsbProcessor extends AbstractProcessor{
     private static final String rightImgRes_FLAG = "rightImgRes", rightText_FLAG = "rightText";
     private static final String isSwipeBack_FLAG = "isSwipeBack";
     private String rPackage = null;//R’packageName
-
+    private final TypeName VIEW_TYPE = ClassName.get("android.view", "View");
+    private final TypeName STRING_TYPE = ClassName.get("java.lang", "String");
 
     @Override
     public synchronized void init(ProcessingEnvironment env) {
@@ -104,7 +108,7 @@ public class XsbProcessor extends AbstractProcessor{
                     && symbol.getEnclosingElement().getEnclosingElement().enclClass() != null) {
                 rPackage = symbol.getEnclosingElement().getEnclosingElement().enclClass().className();
                 int lastIndex = rPackage.lastIndexOf(".");
-                rPackage = rPackage.substring(0,lastIndex);
+                rPackage = rPackage.substring(0, lastIndex);
 //                println("RClassScanner", rPackage+"--->"+lastIndex);
             }
         }
@@ -124,11 +128,7 @@ public class XsbProcessor extends AbstractProcessor{
                 layoutAnnString = layoutAnnString.substring(firstIndex + 1, layoutAnnString.length() - 1);
 
 //                println("findRClass", packageName + "--->" + className + "---->" + layoutAnnString);
-
                 TypeName targetType = ClassName.get(packageName, className);
-                MethodSpec.Builder construBuilder = MethodSpec.constructorBuilder()
-                        .addModifiers(PUBLIC)
-                        .addParameter(targetType, "target");
                 String layout = getRresString(layoutAnnString, layout_FLAG);
                 String title = getRresString(layoutAnnString, title_FLAG);
                 String titleStringRes = getRresString(layoutAnnString, titleStringRes_FLAG);
@@ -142,14 +142,29 @@ public class XsbProcessor extends AbstractProcessor{
                 if (leftImgRes == null) leftImgRes = "0";
                 if (rightImgRes != null) rightImgRes = "new int []{" + rightImgRes + "}";
                 if (rightText != null) rightText = "new int []{" + rightText + "}";
-
                 if (isSwipeBack == null) isSwipeBack = "false";
-                construBuilder.addStatement("target.initLayoutAndTitle(" + layout + "," +
-                        title + "," + titleStringRes + "," + leftImgRes + "," + rightImgRes + "," +
-                        rightText + "," + isSwipeBack + ")");
+
+                //
+                MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
+                        .addModifiers(PUBLIC)
+                        .addParameter(targetType, "target");
+                constructorBuilder.addStatement("this(target,null)");
+
+                //
+                MethodSpec.Builder viewConstructorBuilder = MethodSpec.constructorBuilder()
+                        .addModifiers(PUBLIC)
+                        .addParameter(targetType, "target")
+                        .addParameter(VIEW_TYPE, "titleView");
+                viewConstructorBuilder.addStatement("if(!" + isSwipeBack + ")target.setContentView(" + layout + ")");
+                viewConstructorBuilder.addStatement("else target.setContentView(" + layout + ")");
+                viewConstructorBuilder.addStatement("initTitleView(target,titleView," + title + "," + titleStringRes + ","
+                        + leftImgRes + "," + rightImgRes + "," + rightText + ")");
+
 
                 TypeSpec.Builder result = TypeSpec.classBuilder(className + "_LayoutAnn").addModifiers(PUBLIC);
-                result.addMethod(construBuilder.build());
+                result.addMethod(constructorBuilder.build());
+                result.addMethod(viewConstructorBuilder.build());
+                result.addMethod(initTitleView(targetType));
 //
                 JavaFile javaFile = JavaFile.builder(packageName, result.build())
                         .addFileComment("Generated code from Layout. Do not modify!")
@@ -161,6 +176,60 @@ public class XsbProcessor extends AbstractProcessor{
                 }
             }
         }
+    }
+
+    private MethodSpec initTitleView(TypeName typeName) {
+        return MethodSpec.methodBuilder("initTitleView")
+                .addModifiers(PRIVATE)
+                .addParameter(typeName,"activity")
+                .addParameter(VIEW_TYPE, "titleView")
+                .addParameter(STRING_TYPE, "title")
+                .addParameter(TypeName.INT, "titleStringRes")
+                .addParameter(TypeName.INT, "leftImgRes")
+                .addParameter(int[].class, "rightImgRes")
+                .addParameter(int[].class, "rightText")
+                .addStatement("  if (titleView ==null|| !titleView.getClass().getName().endsWith(\"TitleView\")) return")
+                .beginControlFlow("try ")
+                .beginControlFlow("if (titleStringRes != 0)")
+                .addStatement(callMethod("setTitle", "int", "titleStringRes")).endControlFlow()
+                .beginControlFlow("else ").addStatement(callMethod("setTitle", "String", "title")).endControlFlow()
+
+
+                .beginControlFlow("if (leftImgRes == 0) ")
+                .addStatement(callMethod("setLeftOneImge", "int", rPackage + ".R.mipmap.xsb_view_return_btn")).endControlFlow()
+                .beginControlFlow("else if (leftImgRes > 0)").addStatement(callMethod("setLeftOneImge", "int", "leftImgRes")).endControlFlow()
+                .beginControlFlow("else if (leftImgRes < 0) ").addStatement(callMethod("setLeftOneImge", "int", "0")).endControlFlow()
+
+                .beginControlFlow(" if (rightImgRes != null) ")
+                .beginControlFlow("if (rightImgRes.length == 1) ").addStatement(callMethod("setRightOneImge","int","rightImgRes[0]")).endControlFlow()
+                .beginControlFlow(" else if (rightImgRes.length == 2) ").addStatement(callMethod("setRightOneImge","int","rightImgRes[0]"))
+                .addStatement(callMethod("setRightTwoImge","int","rightImgRes[1]")).endControlFlow()
+
+                .beginControlFlow(" if (rightText != null) ")
+
+                .beginControlFlow(" if (rightText.length == 1)")
+                .addStatement(callMethod("setRightOneText","int","rightText[0] == 0 ? null : activity.getString(rightText[0])"))
+                .endControlFlow()
+
+                .beginControlFlow("else if (rightText.length == 2)")
+                .addStatement(callMethod("setRightOneText","int","rightText[0] == 0 ? null : activity.getString(rightText[0])"))
+                .addStatement(callMethod("setRightTwoText","int","rightText[1] == 0 ? null : activity.getString(rightText[1])"))
+                .endControlFlow()
+                .endControlFlow()
+                .endControlFlow()
+
+//        if (leftImgRes == 0) titleView.setLeftOneImge(R.mipmap.xsb_view_return_btn);
+//        else if (leftImgRes > 0) titleView.setLeftOneImge(leftImgRes);
+//        else if (leftImgRes < 0) titleView.setLeftOneImge(0);
+
+
+                .endControlFlow().beginControlFlow("catch (java.lang.Exception e) ").endControlFlow()
+                .build();
+    }
+
+    public String callMethod(String methodName, String classType, String param) {
+        return "titleView.getClass().getMethod(\"" + methodName + "\"," +
+                classType + ".class).invoke(titleView," + param + ")";
     }
 
     private String getRresString(String annString, String flag) {

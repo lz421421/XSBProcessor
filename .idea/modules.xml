@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/XsbProcessor.iml" filepath="$PROJECT_DIR$/XsbProcessor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/testlibrary/testlibrary.iml" filepath="$PROJECT_DIR$/testlibrary/testlibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xsb-ann-plugin/xsb-ann-plugin.iml" filepath="$PROJECT_DIR$/xsb-ann-plugin/xsb-ann-plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/xsb-annotation/lib_annotation.iml" filepath="$PROJECT_DIR$/xsb-annotation/lib_annotation.iml" />
       <module fileurl="file://$PROJECT_DIR$/xsb-processor/Xsb_Processor.iml" filepath="$PROJECT_DIR$/xsb-processor/Xsb_Processor.iml" />
     </modules>

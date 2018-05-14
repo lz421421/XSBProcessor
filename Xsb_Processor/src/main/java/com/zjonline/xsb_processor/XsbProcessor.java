@@ -148,15 +148,16 @@ public class XsbProcessor extends AbstractProcessor {
                 MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
                         .addModifiers(PUBLIC)
                         .addParameter(targetType, "target");
-                constructorBuilder.addStatement("this(target,null)");
+                constructorBuilder.addStatement("this(target,0)");
 
                 //
                 MethodSpec.Builder viewConstructorBuilder = MethodSpec.constructorBuilder()
                         .addModifiers(PUBLIC)
                         .addParameter(targetType, "target")
-                        .addParameter(VIEW_TYPE, "titleView");
+                        .addParameter(ClassName.INT, "titleViewId");
                 viewConstructorBuilder.addStatement("if(!" + isSwipeBack + ")target.setContentView(" + layout + ")");
                 viewConstructorBuilder.addStatement("else target.setContentView(" + layout + ")");
+                viewConstructorBuilder.addStatement("android.view.View titleView = titleViewId == 0? null : target.findViewById(titleViewId)");
                 viewConstructorBuilder.addStatement("initTitleView(target,titleView," + title + "," + titleStringRes + ","
                         + leftImgRes + "," + rightImgRes + "," + rightText + ")");
 
@@ -181,7 +182,7 @@ public class XsbProcessor extends AbstractProcessor {
     private MethodSpec initTitleView(TypeName typeName) {
         return MethodSpec.methodBuilder("initTitleView")
                 .addModifiers(PRIVATE)
-                .addParameter(typeName,"activity")
+                .addParameter(typeName, "activity")
                 .addParameter(VIEW_TYPE, "titleView")
                 .addParameter(STRING_TYPE, "title")
                 .addParameter(TypeName.INT, "titleStringRes")
@@ -201,19 +202,19 @@ public class XsbProcessor extends AbstractProcessor {
                 .beginControlFlow("else if (leftImgRes < 0) ").addStatement(callMethod("setLeftOneImge", "int", "0")).endControlFlow()
 
                 .beginControlFlow(" if (rightImgRes != null) ")
-                .beginControlFlow("if (rightImgRes.length == 1) ").addStatement(callMethod("setRightOneImge","int","rightImgRes[0]")).endControlFlow()
-                .beginControlFlow(" else if (rightImgRes.length == 2) ").addStatement(callMethod("setRightOneImge","int","rightImgRes[0]"))
-                .addStatement(callMethod("setRightTwoImge","int","rightImgRes[1]")).endControlFlow()
+                .beginControlFlow("if (rightImgRes.length == 1) ").addStatement(callMethod("setRightOneImge", "int", "rightImgRes[0]")).endControlFlow()
+                .beginControlFlow(" else if (rightImgRes.length == 2) ").addStatement(callMethod("setRightOneImge", "int", "rightImgRes[0]"))
+                .addStatement(callMethod("setRightTwoImge", "int", "rightImgRes[1]")).endControlFlow()
 
                 .beginControlFlow(" if (rightText != null) ")
 
                 .beginControlFlow(" if (rightText.length == 1)")
-                .addStatement(callMethod("setRightOneText","int","rightText[0] == 0 ? null : activity.getString(rightText[0])"))
+                .addStatement(callMethod("setRightOneText", "int", "rightText[0] == 0 ? null : activity.getString(rightText[0])"))
                 .endControlFlow()
 
                 .beginControlFlow("else if (rightText.length == 2)")
-                .addStatement(callMethod("setRightOneText","int","rightText[0] == 0 ? null : activity.getString(rightText[0])"))
-                .addStatement(callMethod("setRightTwoText","int","rightText[1] == 0 ? null : activity.getString(rightText[1])"))
+                .addStatement(callMethod("setRightOneText", "int", "rightText[0] == 0 ? null : activity.getString(rightText[0])"))
+                .addStatement(callMethod("setRightTwoText", "int", "rightText[1] == 0 ? null : activity.getString(rightText[1])"))
                 .endControlFlow()
                 .endControlFlow()
                 .endControlFlow()
@@ -223,7 +224,7 @@ public class XsbProcessor extends AbstractProcessor {
 //        else if (leftImgRes < 0) titleView.setLeftOneImge(0);
 
 
-                .endControlFlow().beginControlFlow("catch (java.lang.Exception e) ").endControlFlow()
+                .endControlFlow().beginControlFlow("catch (java.lang.Exception e) ").addStatement(" e.printStackTrace()").endControlFlow()
                 .build();
     }
 

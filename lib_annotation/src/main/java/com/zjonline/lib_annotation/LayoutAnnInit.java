@@ -1,6 +1,7 @@
 package com.zjonline.lib_annotation;
 
 import android.app.Activity;
+import android.view.View;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -16,16 +17,24 @@ public class LayoutAnnInit {
     static final Map<Class<?>, Constructor<?>> BINDINGS = new LinkedHashMap<>();
 
     public static void bind(Activity target) {
-        createBinding(target);
+        bind(target, 0);
     }
 
-    private static void createBinding(Activity target) {
+    /**
+     * @param target    当前activity
+     * @param titleViewId 标题viewID
+     */
+    public static void bind(Activity target, int titleViewId) {
+        createBinding(target, titleViewId);
+    }
+
+    private static void createBinding(Activity target, int titleViewId) {
         Class<?> targetClass = target.getClass();
         Constructor<?> constructor = findBindingConstructorForClass(targetClass);
         if (constructor == null) return;
         //noinspection TryWithIdenticalCatches Resolves to API 19+ only type.
         try {
-            constructor.newInstance(target);
+            constructor.newInstance(target, titleViewId);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Unable to invoke " + constructor, e);
         } catch (InstantiationException e) {
@@ -50,7 +59,7 @@ public class LayoutAnnInit {
         try {
             Class<?> bindingClass = cls.getClassLoader().loadClass(clsName + "_LayoutAnn");
             //noinspection unchecked
-            bindingCtor = bindingClass.getConstructor(cls);
+            bindingCtor = bindingClass.getConstructor(cls, int.class);
         } catch (ClassNotFoundException e) {
             bindingCtor = findBindingConstructorForClass(cls.getSuperclass());
         } catch (NoSuchMethodException e) {

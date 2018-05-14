@@ -2,7 +2,6 @@ package com.zjonline.xsb_processor;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
@@ -109,7 +108,6 @@ public class XsbProcessor extends AbstractProcessor {
                 rPackage = symbol.getEnclosingElement().getEnclosingElement().enclClass().className();
                 int lastIndex = rPackage.lastIndexOf(".");
                 rPackage = rPackage.substring(0, lastIndex);
-//                println("RClassScanner", rPackage+"--->"+lastIndex);
             }
         }
     }
@@ -127,7 +125,6 @@ public class XsbProcessor extends AbstractProcessor {
                 int firstIndex = layoutAnnString.indexOf("(");
                 layoutAnnString = layoutAnnString.substring(firstIndex + 1, layoutAnnString.length() - 1);
 
-//                println("findRClass", packageName + "--->" + className + "---->" + layoutAnnString);
                 TypeName targetType = ClassName.get(packageName, className);
                 String layout = getRresString(layoutAnnString, layout_FLAG);
                 String title = getRresString(layoutAnnString, title_FLAG);
@@ -218,11 +215,6 @@ public class XsbProcessor extends AbstractProcessor {
                 .endControlFlow()
                 .endControlFlow()
                 .endControlFlow()
-
-//        if (leftImgRes == 0) titleView.setLeftOneImge(R.mipmap.xsb_view_return_btn);
-//        else if (leftImgRes > 0) titleView.setLeftOneImge(leftImgRes);
-//        else if (leftImgRes < 0) titleView.setLeftOneImge(0);
-
 
                 .endControlFlow().beginControlFlow("catch (java.lang.Exception e) ").addStatement(" e.printStackTrace()").endControlFlow()
                 .build();

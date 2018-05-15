@@ -35,7 +35,9 @@ uploadArchives {
             pom.artifactId = 'xsb-ann-plugin'
             pom.version = '1.0.1'
             //文件发布到下面目录
-            repository(url: uri("../repository"))
+            repository(url: 'http://10.100.62.98:8086/nexus/content/repositories/releases') {
+                authentication(userName: 'deployment', password: 'deployment123')
+            }
         }
     }
 }

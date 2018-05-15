@@ -1,13 +1,22 @@
 package com.zjonline.xsbprocessor;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.zjonline.lib_annotation.LayoutAnnInterface;
 import com.zjonline.lib_annotation.LayoutAnn;
 import com.zjonline.lib_annotation.LayoutAnnInit;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 @LayoutAnn(layout = R.layout.activity_main, titleStringRes = R.string.hello, rightImgRes = {R.mipmap.ic_launcher_round, R.mipmap.ic_launcher_round})
 public class MainActivity extends AppCompatActivity implements LayoutAnnInterface {

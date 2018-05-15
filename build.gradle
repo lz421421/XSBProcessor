@@ -6,7 +6,7 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven { url uri('./repository') }// 添加Maven的本地依赖
+        maven { url "http://10.100.62.98:8086/nexus/content/groups/public" }// 添加Maven的本地依赖
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'

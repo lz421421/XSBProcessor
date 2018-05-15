@@ -5,9 +5,9 @@ group='com.github.lz421421'
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly 'com.google.auto.service:auto-service:1.0-rc3'
-    compile 'com.squareup:javapoet:1.9.0'
-    compile 'com.google.auto:auto-common:0.8'
-    compile 'com.google.android:android:4.1.1.4'
+    implementation 'com.squareup:javapoet:1.9.0'
+    implementation 'com.google.auto:auto-common:0.8'
+    implementation 'com.google.android:android:4.1.1.4'
     implementation project(':xsb-annotation')
     compileOnly files(org.gradle.internal.jvm.Jvm.current().getToolsJar())
 }

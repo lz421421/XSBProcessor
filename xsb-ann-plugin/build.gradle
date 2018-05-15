@@ -19,10 +19,10 @@ dependencies {
     compile gradleApi()
 //    compile localGroovy()
 
-    compile 'com.android.tools.build:gradle:3.0.1'
-    compile 'com.squareup:javapoet:1.11.0'
-    compile 'com.github.javaparser:javaparser-core:3.6.4'
-    compile 'org.jetbrains.kotlin:kotlin-stdlib-jre8:1.2.21'
+    implementation 'com.android.tools.build:gradle:3.0.1'
+    implementation 'com.squareup:javapoet:1.11.0'
+    implementation 'com.github.javaparser:javaparser-core:3.6.4'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jre8:1.2.21'
 }
 
 

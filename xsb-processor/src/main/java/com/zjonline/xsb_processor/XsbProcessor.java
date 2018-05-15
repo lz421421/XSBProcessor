@@ -249,7 +249,7 @@ public class XsbProcessor extends AbstractProcessor {
     }
 
     public String callMethod(String methodName, String classType, String param) {
-        return "titleView.getClass().getMethod(\"" + methodName + "\"," +
+        return "titleView.getClass().getDeclaredMethod(\"" + methodName + "\"," +
                 classType + ".class).invoke(titleView," + param + ")";
     }
 

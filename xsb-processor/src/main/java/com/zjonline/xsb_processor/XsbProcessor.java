@@ -2,6 +2,7 @@ package com.zjonline.xsb_processor;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
@@ -46,6 +47,7 @@ public class XsbProcessor extends AbstractProcessor {
     private static final String isSwipeBack_FLAG = "isSwipeBack";
     private String rPackage = null;//R’packageName
     private final TypeName VIEW_TYPE = ClassName.get("android.view", "View");
+    private final TypeName VIEWGROUP_TYPE = ClassName.get("android.view", "ViewGroup");
     private final TypeName STRING_TYPE = ClassName.get("java.lang", "String");
 
     @Override
@@ -149,29 +151,46 @@ public class XsbProcessor extends AbstractProcessor {
                         .addModifiers(PUBLIC)
                         .addParameter(targetType, "target")
                         .addParameter(ClassName.INT, "titleViewId");
-                viewConstructorBuilder.addStatement("if(!" + isSwipeBack + ")target.setContentView(" + layout + ")");//!swipeBack
-                viewConstructorBuilder.beginControlFlow("else ")
-                        .beginControlFlow("try ")
-                        .addStatement("View v = (View)target.getClass().getMethod(\"createSwipeBackView\",int.class).invoke(target,"+layout+")")
-                        .addStatement("if (v!=null)target.setContentView(v)")
-                        .addStatement("else target.setContentView(" + layout + ")")
-                        .endControlFlow()
 
-                        .beginControlFlow("catch (java.lang.Exception e) ")
-                        .addStatement("target.setContentView(" + layout + ")")
-                        .endControlFlow()
-
+                viewConstructorBuilder.addStatement("int layoutId = " + layout);
+                viewConstructorBuilder.beginControlFlow("if (layoutId == 0)")
+                        .addStatement("layoutId = target.layoutId()")
                         .endControlFlow();
 
+                viewConstructorBuilder.addStatement("if(!" + isSwipeBack + ")target.setContentView(layoutId)");//!swipeBack
+                viewConstructorBuilder.beginControlFlow("else ")
+                        .addStatement("View v = target.createSwipeBackView(layoutId)")
+                        .addStatement("if (v!=null)target.setContentView(v)")
+                        .addStatement("else target.setContentView(layoutId)")
+                        .endControlFlow();
                 viewConstructorBuilder.addStatement("android.view.View titleView = titleViewId == 0? null : target.findViewById(titleViewId)");
+
                 viewConstructorBuilder.addStatement("initTitleView(target,titleView," + title + "," + titleStringRes + ","
                         + leftImgRes + "," + rightImgRes + "," + rightText + ")");
 
+                FieldSpec.Builder fieldSpec = FieldSpec.builder(VIEW_TYPE, "view", PUBLIC);
+                MethodSpec.Builder viewGroupBuilder = MethodSpec.constructorBuilder()
+                        .addModifiers(PUBLIC)
+                        .addParameter(targetType, "target")
+                        .addParameter(ClassName.INT, "titleViewId")
+                        .addParameter(VIEWGROUP_TYPE, "viewGroup");
+
+                viewGroupBuilder.addStatement(" view =  target.getLayoutInflater().inflate(" + layout + ",viewGroup,false);");
+                viewGroupBuilder.addStatement("  android.view.View titleView = titleViewId == 0 ? null : view.findViewById(titleViewId)");
+                viewGroupBuilder.addStatement("initTitleView(target,titleView," + title + "," + titleStringRes + ","
+                        + leftImgRes + "," + rightImgRes + "," + rightText + ")");
+
+                MethodSpec.Builder getViewMethod = MethodSpec.methodBuilder("getView").addModifiers(PUBLIC)
+                        .returns(VIEW_TYPE)
+                        .addStatement("return view");
 
                 TypeSpec.Builder result = TypeSpec.classBuilder(className + "_LayoutAnn").addModifiers(PUBLIC);
                 result.addMethod(constructorBuilder.build());
                 result.addMethod(viewConstructorBuilder.build());
+                result.addMethod(viewGroupBuilder.build());
+                result.addField(fieldSpec.build());
                 result.addMethod(initTitleView(targetType));
+                result.addMethod(getViewMethod.build());
 //
                 JavaFile javaFile = JavaFile.builder(packageName, result.build())
                         .addFileComment("Generated code from Layout. Do not modify!")

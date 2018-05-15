@@ -27,4 +27,14 @@ public class MainActivity extends AppCompatActivity {
     public void setTitleView(View titleView) {
         this.titleView = (TitleView) titleView;
     }
+
+    /**
+     * 自动生成的代码调用
+     *
+     * @param layoutId 布局的layout
+     * @return 返回可以滑动结束的布局
+     */
+    public View createSwipeBackView(int layoutId) {
+        return MySlidingPaneLayout.swipeBackView(this, layoutId);
+    }
 }

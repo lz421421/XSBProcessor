@@ -136,7 +136,7 @@ public class XsbProcessor extends AbstractProcessor {
                 if (leftImgRes == null) leftImgRes = "0";
                 if (rightImgRes != null) rightImgRes = "new int []{" + rightImgRes + "}";
                 if (rightText != null) rightText = "new int []{" + rightText + "}";
-                if (isSwipeBack == null) isSwipeBack = "false";
+                if (isSwipeBack == null) isSwipeBack = "true";
 
                 //
                 MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
@@ -149,8 +149,20 @@ public class XsbProcessor extends AbstractProcessor {
                         .addModifiers(PUBLIC)
                         .addParameter(targetType, "target")
                         .addParameter(ClassName.INT, "titleViewId");
-                viewConstructorBuilder.addStatement("if(!" + isSwipeBack + ")target.setContentView(" + layout + ")");
-                viewConstructorBuilder.addStatement("else target.setContentView(" + layout + ")");
+                viewConstructorBuilder.addStatement("if(!" + isSwipeBack + ")target.setContentView(" + layout + ")");//!swipeBack
+                viewConstructorBuilder.beginControlFlow("else ")
+                        .beginControlFlow("try ")
+                        .addStatement("View v = (View)target.getClass().getMethod(\"createSwipeBackView\",int.class).invoke(target,"+layout+")")
+                        .addStatement("if (v!=null)target.setContentView(v)")
+                        .addStatement("else target.setContentView(" + layout + ")")
+                        .endControlFlow()
+
+                        .beginControlFlow("catch (java.lang.Exception e) ")
+                        .addStatement("target.setContentView(" + layout + ")")
+                        .endControlFlow()
+
+                        .endControlFlow();
+
                 viewConstructorBuilder.addStatement("android.view.View titleView = titleViewId == 0? null : target.findViewById(titleViewId)");
                 viewConstructorBuilder.addStatement("initTitleView(target,titleView," + title + "," + titleStringRes + ","
                         + leftImgRes + "," + rightImgRes + "," + rightText + ")");

@@ -19,7 +19,14 @@ public class LayoutAnnInit {
 
 
     public static void bind(LayoutAnnInterface target) {
-        bind(target, 0);
+        Constructor<?> constructor = findOneParamConstructor(target.getClass(), 1);
+        if (constructor != null) {
+            try {
+                constructor.newInstance(target);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -27,7 +34,14 @@ public class LayoutAnnInit {
      * @param titleViewId 标题viewID
      */
     public static void bind(LayoutAnnInterface target, int titleViewId) {
-        createBinding(target, titleViewId, null);
+        Constructor<?> constructor = findOneParamConstructor(target.getClass(), 2);
+        if (constructor != null) {
+            try {
+                constructor.newInstance(target, titleViewId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
@@ -36,56 +50,52 @@ public class LayoutAnnInit {
      * @param titleViewId 标题viewID
      */
     public static View bind(LayoutAnnInterface target, ViewGroup container, int titleViewId) {
-        Object o = createBinding(target, titleViewId, container);
-        try {
-            return (View) o.getClass().getMethod("getView").invoke(o);
-        } catch (Exception e) {
-            e.printStackTrace();
+        Constructor<?> constructor = findOneParamConstructor(target.getClass(), 3);
+        if (constructor != null) {
+            try {
+                Object o = constructor.newInstance(target, titleViewId, container);
+                return (View) o.getClass().getDeclaredMethod("getView").invoke(o);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
 
 
-    private static Object createBinding(LayoutAnnInterface target, int titleViewId, ViewGroup container) {
-        Class<?> targetClass = target.getClass();
-        Constructor<?> constructor = findBindingConstructorForClass(targetClass, container);
-        if (constructor == null) return null;
-        //noinspection TryWithIdenticalCatches Resolves to API 19+ only type.
-        try {
-            if (container == null) return constructor.newInstance(target, titleViewId);
-            else return constructor.newInstance(target, titleViewId, container);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Unable to invoke " + constructor, e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException("Unable to invoke " + constructor, e);
-        } catch (InvocationTargetException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException) {
-                throw (RuntimeException) cause;
-            }
-            if (cause instanceof Error) {
-                throw (Error) cause;
-            }
-            throw new RuntimeException("Unable to create binding instance.", cause);
-        }
-    }
-
-    private static Constructor<?> findBindingConstructorForClass(Class<?> cls, ViewGroup container) {
-        Constructor<?> bindingCtor = BINDINGS.get(cls);
+    /**
+     * 初始化对象的构造参数
+     *
+     * @param cls  传进来的对象
+     * @param type 构造参数的类型 1 一个参数 2两个参数 3三个参数
+     * @return 返回构造参数
+     */
+    private static Constructor<?> findOneParamConstructor(Class<?> cls, int type) {
+        Class<?> targetClass = cls.getClass();
+        Constructor<?> bindingCtor = BINDINGS.get(targetClass);
         if (bindingCtor != null) return bindingCtor;
         String clsName = cls.getName();
         if (clsName.startsWith("android.") || clsName.startsWith("java.")) return null;
         try {
             Class<?> bindingClass = cls.getClassLoader().loadClass(clsName + "_LayoutAnn");
-            //noinspection unchecked
-            if (container == null) bindingCtor = bindingClass.getConstructor(cls, int.class);
-            else bindingCtor = bindingClass.getConstructor(cls, int.class, ViewGroup.class);
+            switch (type) {
+                case 1:
+                    bindingCtor = bindingClass.getConstructor(cls);
+                    break;
+                case 2:
+                    bindingCtor = bindingClass.getConstructor(cls, int.class);
+                    break;
+                case 3:
+                    bindingCtor = bindingClass.getConstructor(cls, int.class, ViewGroup.class);
+                    break;
+            }
         } catch (ClassNotFoundException e) {
-            bindingCtor = findBindingConstructorForClass(cls.getSuperclass(), null);
+            bindingCtor = findOneParamConstructor(cls.getSuperclass(), type);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("Unable to find binding constructor for " + clsName, e);
         }
         BINDINGS.put(cls, bindingCtor);
         return bindingCtor;
+
     }
 }

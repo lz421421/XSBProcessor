@@ -14,7 +14,7 @@ import com.zjonline.lib_annotation.LayoutAnnInit;
 /**
  * Created by 39157 on 2018/5/15.
  */
-@LayoutAnn(layout = R.layout.fragment_my, title = "myFragment")
+@LayoutAnn(layout = R.layout.fragment_my, title = "myFragment",isSwipeBack = false)
 public class MyFragment extends Fragment implements LayoutAnnInterface {
     TitleView titleView;
 

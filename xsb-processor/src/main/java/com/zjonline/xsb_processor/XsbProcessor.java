@@ -174,8 +174,8 @@ public class XsbProcessor extends AbstractProcessor {
                         .addParameter(targetType, "target")
                         .addParameter(ClassName.INT, "titleViewId")
                         .addParameter(VIEWGROUP_TYPE, "viewGroup");
-
-                viewGroupBuilder.addStatement(" view =  target.getLayoutInflater().inflate(" + layout + ",viewGroup,false);");
+                viewGroupBuilder.addStatement("if(" + isSwipeBack + ")view = target.createSwipeBackView(" + layout + ")");
+                viewGroupBuilder.addStatement(" else view =  target.getLayoutInflater().inflate(" + layout + ",viewGroup,false);");
                 viewGroupBuilder.addStatement("  android.view.View titleView = titleViewId == 0 ? null : view.findViewById(titleViewId)");
                 viewGroupBuilder.addStatement("initTitleView(target,titleView," + title + "," + titleStringRes + ","
                         + leftImgRes + "," + rightImgRes + "," + rightText + ")");
@@ -215,6 +215,7 @@ public class XsbProcessor extends AbstractProcessor {
                 .addParameter(int[].class, "rightImgRes")
                 .addParameter(int[].class, "rightText")
                 .addStatement("  if (titleView ==null|| !titleView.getClass().getName().endsWith(\"TitleView\")) return")
+                .addStatement("activity.setTitleView(titleView)")
                 .beginControlFlow("try ")
                 .beginControlFlow("if (titleStringRes != 0)")
                 .addStatement(callMethod("setTitle", "int", "titleStringRes")).endControlFlow()
@@ -243,7 +244,6 @@ public class XsbProcessor extends AbstractProcessor {
                 .endControlFlow()
                 .endControlFlow()
                 .endControlFlow()
-                .addStatement("activity.getClass().getMethod(\"setTitleView\",View.class).invoke(activity,titleView)")
                 .endControlFlow().beginControlFlow("catch (java.lang.Exception e) ").addStatement(" e.printStackTrace()").endControlFlow()
                 .build();
     }

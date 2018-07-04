@@ -15,7 +15,7 @@ repositories {
     jcenter()
     mavenCentral()
 }
-def libVersion = '1.0.1.5'
+def libVersion = '0.0.1-SNAPSHOT'
 def libArtifactId = 'xsb-annotation'
 def libGroupId = 'com.xsb.plugin'
 def libDescription = '布局注解框架'

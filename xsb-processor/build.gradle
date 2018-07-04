@@ -2,8 +2,8 @@ apply plugin: 'java-library'
 apply plugin: 'maven'
 
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -19,26 +19,26 @@ repositories {
     jcenter()
     mavenCentral()
 }
-//def libVersion = '1.0.1.5'
-//def libArtifactId = 'xsb-processor'
-//def libGroupId = 'com.xsb.plugin'
-//def libDescription = '布局注解框架'
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            snapshotRepository(url: 'http://10.100.62.98:8086/nexus/content/repositories/snapshots') {
-//                authentication(userName: 'deployment', password: 'deployment123')
-//            }
-//            //文件发布到下面目录
-//            repository(url: 'http://10.100.62.98:8086/nexus/content/repositories/releases') {
-//                authentication(userName: 'deployment', password: 'deployment123')
-//            }
-//            pom.project {
-//                version libVersion
-//                artifactId libArtifactId
-//                groupId libGroupId
-//                description libDescription
-//            }
-//        }
-//    }
-//}
+def libVersion = '0.0.1-SNAPSHOT'
+def libArtifactId = 'xsb-processor'
+def libGroupId = 'com.xsb.plugin'
+def libDescription = '布局注解框架'
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            snapshotRepository(url: 'http://10.100.62.98:8086/nexus/content/repositories/snapshots') {
+                authentication(userName: 'deployment', password: 'deployment123')
+            }
+            //文件发布到下面目录
+            repository(url: 'http://10.100.62.98:8086/nexus/content/repositories/releases') {
+                authentication(userName: 'deployment', password: 'deployment123')
+            }
+            pom.project {
+                version libVersion
+                artifactId libArtifactId
+                groupId libGroupId
+                description libDescription
+            }
+        }
+    }
+}

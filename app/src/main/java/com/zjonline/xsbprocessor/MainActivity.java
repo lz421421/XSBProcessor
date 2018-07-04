@@ -18,7 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-@LayoutAnn(layout = R.layout.activity_main, titleStringRes = R.string.hello, rightImgRes = {R.mipmap.ic_launcher_round, R.mipmap.ic_launcher_round})
+@LayoutAnn(layout = R.layout.activity_main, titleStringRes = R.string.hello, rightText = {0, R.string.app_name}, rightImgRes = {R.mipmap.ic_launcher_round})
 public class MainActivity extends AppCompatActivity implements LayoutAnnInterface {
     TitleView titleView;
 

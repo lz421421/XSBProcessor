@@ -221,27 +221,29 @@ public class XsbProcessor extends AbstractProcessor {
                 .addStatement(callMethod("setTitle", "int", "titleStringRes")).endControlFlow()
                 .beginControlFlow("else ").addStatement(callMethod("setTitle", "String", "title")).endControlFlow()
 
-
                 .beginControlFlow("if (leftImgRes == 0) ")
                 .addStatement(callMethod("setLeftOneImge", "int", rPackage + ".R.mipmap.xsb_view_return_btn")).endControlFlow()
                 .beginControlFlow("else if (leftImgRes > 0)").addStatement(callMethod("setLeftOneImge", "int", "leftImgRes")).endControlFlow()
                 .beginControlFlow("else if (leftImgRes < 0) ").addStatement(callMethod("setLeftOneImge", "int", "0")).endControlFlow()
 
                 .beginControlFlow(" if (rightImgRes != null) ")
-                .beginControlFlow("if (rightImgRes.length == 1) ").addStatement(callMethod("setRightOneImge", "int", "rightImgRes[0]")).endControlFlow()
-                .beginControlFlow(" else if (rightImgRes.length == 2) ").addStatement(callMethod("setRightOneImge", "int", "rightImgRes[0]"))
-                .addStatement(callMethod("setRightTwoImge", "int", "rightImgRes[1]")).endControlFlow()
+                .beginControlFlow("if (rightImgRes.length == 1) ")
+                .addStatement(callMethod("setRightOneImge", "int", "rightImgRes[0]"))
+                .endControlFlow()
+
+                .beginControlFlow(" else if (rightImgRes.length == 2) ")
+                .addStatement(callMethod("setRightOneImge", "int", "rightImgRes[0]"))
+                .addStatement(callMethod("setRightTwoImge", "int", "rightImgRes[1]"))
+                .endControlFlow().endControlFlow()
 
                 .beginControlFlow(" if (rightText != null) ")
-
                 .beginControlFlow(" if (rightText.length == 1)")
-                .addStatement(callMethod("setRightOneText", "int", "rightText[0] == 0 ? null : activity.getString(rightText[0])"))
+                .addStatement(callMethod("setRightOneText", "String", "rightText[0] == 0 ? null : activity.getString(rightText[0])"))
                 .endControlFlow()
 
                 .beginControlFlow("else if (rightText.length == 2)")
-                .addStatement(callMethod("setRightOneText", "int", "rightText[0] == 0 ? null : activity.getString(rightText[0])"))
-                .addStatement(callMethod("setRightTwoText", "int", "rightText[1] == 0 ? null : activity.getString(rightText[1])"))
-                .endControlFlow()
+                .addStatement(callMethod("setRightOneText", "String", "rightText[0] == 0 ? null : activity.getString(rightText[0])"))
+                .addStatement(callMethod("setRightTwoText", "String", "rightText[1] == 0 ? null : activity.getString(rightText[1])"))
                 .endControlFlow()
                 .endControlFlow()
                 .endControlFlow().beginControlFlow("catch (java.lang.Exception e) ").addStatement(" e.printStackTrace()").endControlFlow()

@@ -30,6 +30,12 @@ public class MainActivity extends AppCompatActivity implements LayoutAnnInterfac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LayoutAnnInit.bind(this, R.id.xsb_view_title);
+        titleView.setOnLeftClickListener(new TitleView.OnLeftClickListener() {
+            @Override
+            public void onLeftClick(View view, int which) {
+                finish();
+            }
+        });
     }
 
     public void start(View view) {
@@ -40,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements LayoutAnnInterfac
     public void setTitleView(View titleView) {
         this.titleView = (TitleView) titleView;
     }
+
+
 
     /**
      * 自动生成的代码调用

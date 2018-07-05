@@ -222,7 +222,8 @@ public class XsbProcessor extends AbstractProcessor {
                 .beginControlFlow("else ").addStatement(callMethod("setTitle", "String", "title")).endControlFlow()
 
                 .beginControlFlow("if (leftImgRes == 0) ")
-                .addStatement(callMethod("setLeftOneImge", "int", rPackage + ".R.mipmap.xsb_view_return_btn")).endControlFlow()
+//                .addStatement(callMethod("setLeftOneImge", "int", rPackage + ".R.mipmap.xsb_view_return_btn"))
+                .endControlFlow()
                 .beginControlFlow("else if (leftImgRes > 0)").addStatement(callMethod("setLeftOneImge", "int", "leftImgRes")).endControlFlow()
                 .beginControlFlow("else if (leftImgRes < 0) ").addStatement(callMethod("setLeftOneImge", "int", "0")).endControlFlow()
 

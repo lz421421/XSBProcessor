@@ -9,15 +9,24 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.type.PrimitiveType;
+import com.github.javaparser.ast.type.Type;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
-import com.github.javaparser.ast.type.Type;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PUBLIC;
@@ -105,4 +114,63 @@ public class CreateR {
         if (word.startsWith("mi")) word = "drawable";
         return Character.toUpperCase(word.charAt(0)) + word.substring(1);
     }
+
+    @SuppressWarnings("unchecked")
+    public static void unZipFiles(String zipFilePath, String fileSavePath) {
+//        FileOperateUtil fileOperateUtil = new FileOperateUtil();
+        boolean isUnZipSuccess = true;
+        try {
+            (new File(fileSavePath)).mkdirs();
+            File f = new File(zipFilePath);
+            if ((!f.exists()) && (f.length() <= 0)) {
+                throw new RuntimeException("not find " + zipFilePath + "!");
+            }
+            //
+            System.out.println("------------>: " + f.exists());
+            JarFile zipFile = new JarFile(zipFilePath);
+            String gbkPath, strtemp;
+            Enumeration<JarEntry> e = zipFile.entries();
+            while (e.hasMoreElements()) {
+                ZipEntry zipEnt = e.nextElement();
+                gbkPath = zipEnt.getName();
+                strtemp = fileSavePath + File.separator + gbkPath;
+                if (zipEnt.isDirectory()) { //
+                    File dir = new File(strtemp);
+                    if (!dir.exists()) {
+                        dir.mkdirs();
+                    }
+                    continue;
+                } else {
+                    //
+                    InputStream is = zipFile.getInputStream(zipEnt);
+                    BufferedInputStream bis = new BufferedInputStream(is);
+                    //
+                    String strsubdir = gbkPath;
+                    for (int i = 0; i < strsubdir.length(); i++) {
+                        if (strsubdir.substring(i, i + 1).equalsIgnoreCase("/")) {
+                            String temp = fileSavePath + File.separator
+                                    + strsubdir.substring(0, i);
+                            File subdir = new File(temp);
+                            if (!subdir.exists())
+                                subdir.mkdir();
+                        }
+                    }
+                    FileOutputStream fos = new FileOutputStream(strtemp);
+                    BufferedOutputStream bos = new BufferedOutputStream(fos);
+                    int len;
+                    byte[] buff = new byte[5120];
+                    while ((len = bis.read(buff)) != -1) {
+                        bos.write(buff, 0, len);
+                    }
+                    bos.close();
+                    fos.close();
+                }
+            }
+            zipFile.close();
+        } catch (Exception e) {
+            isUnZipSuccess = false;
+            System.out.println("extract file error: " + zipFilePath);
+        }
+    }
+
 }

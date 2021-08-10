@@ -2,6 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/XSBProcessor.iml" filepath="$PROJECT_DIR$/.idea/modules/XSBProcessor.iml" group="XSBProcessor" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/XSBProcessor-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/XSBProcessor-app.iml" group="XSBProcessor/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/testlibrary/XSBProcessor-testlibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/testlibrary/XSBProcessor-testlibrary.iml" group="XSBProcessor/testlibrary" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/xsb-ann-plugin/XSBProcessor-xsb-ann-plugin.iml" filepath="$PROJECT_DIR$/.idea/modules/xsb-ann-plugin/XSBProcessor-xsb-ann-plugin.iml" group="XSBProcessor/xsb-ann-plugin" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/xsb-annotation/XSBProcessor-xsb-annotation.iml" filepath="$PROJECT_DIR$/.idea/modules/xsb-annotation/XSBProcessor-xsb-annotation.iml" group="XSBProcessor/xsb-annotation" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/xsb-processor/XSBProcessor-xsb-processor.iml" filepath="$PROJECT_DIR$/.idea/modules/xsb-processor/XSBProcessor-xsb-processor.iml" group="XSBProcessor/xsb-processor" />
       <module fileurl="file://$PROJECT_DIR$/XsbProcessor.iml" filepath="$PROJECT_DIR$/XsbProcessor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/testlibrary/testlibrary.iml" filepath="$PROJECT_DIR$/testlibrary/testlibrary.iml" />

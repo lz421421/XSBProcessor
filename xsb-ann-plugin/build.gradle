@@ -10,21 +10,21 @@ configurations {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile gradleApi()
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly gradleApi()
 //    compile localGroovy()
 
-    implementation 'com.android.tools.build:gradle:3.0.1'
+    implementation 'com.android.tools.build:gradle:4.0.0'
     implementation 'com.squareup:javapoet:1.11.0'
     implementation 'com.github.javaparser:javaparser-core:3.6.4'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jre8:1.2.21'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.31'
 }
 
 repositories {
     jcenter()
     mavenCentral()
 }
-def libVersion = '0.0.1-SNAPSHOT'
+def libVersion = '0.1.6-SNAPSHOT'
 def libArtifactId = 'xsb-plugin'
 def libGroupId = 'com.xsb.plugin'
 def libDescription = '布局注解框架'

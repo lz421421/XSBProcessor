@@ -11,7 +11,7 @@ import javax.lang.model.element.Modifier.PUBLIC
 import javax.lang.model.element.Modifier.STATIC
 
 
-private const val ANNOTATION_PACKAGE = "android.support.annotation"
+private const val ANNOTATION_PACKAGE = "androidx.annotation"
 internal val SUPPORTED_TYPES = setOf("anim", "array", "attr", "bool", "color", "dimen",
         "drawable", "id", "integer", "layout", "menu", "plurals", "string", "style", "styleable", "mipmap")
 

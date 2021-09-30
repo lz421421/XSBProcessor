@@ -42,14 +42,10 @@ class ButterKnifePlugin : Plugin<Project> {
         }
     }
 
-    // Parse the variant's main manifest file in order to get the package id which is used to create
-    // R.java in the right place.
     private fun getPackageName(variant: BaseVariant): String {
         val slurper = XmlSlurper(false, false)
         val list = variant.sourceSets.map { it.manifestFile }
 
-        // According to the documentation, the earlier files in the list are meant to be overridden by the later ones.
-        // So the first file in the sourceSets list should be main.
         val result = slurper.parse(list[0])
         return result.getProperty("@package").toString()
     }
@@ -62,12 +58,9 @@ class ButterKnifePlugin : Plugin<Project> {
             val rPackage = getPackageName(variant)
             val once = AtomicBoolean()
             variant.outputs.all { output ->
-                // Though there might be multiple outputs, their R files are all the same. Thus, we only
-                // need to configure the task once with the R.java input and action.
                 if (once.compareAndSet(false, true)) {
                     val processResources = output.processResourcesProvider.get() // TODO lazy
                     if (processResources.sourceOutputDir.absolutePath.endsWith(".jar")){
-                        // TODO: switch to better API once exists in AGP (https://issuetracker.google.com/118668005)
                         val rFile =
                                 project.files(
                                         when (processResources) {

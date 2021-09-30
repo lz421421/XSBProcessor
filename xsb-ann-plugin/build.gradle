@@ -25,7 +25,7 @@ repositories {
     mavenCentral()
 }
 def libVersion = '0.1.6-SNAPSHOT'
-def libArtifactId = 'xsb-plugin'
+def libArtifactId = 'xsb-plugin-androidx'
 def libGroupId = 'com.xsb.plugin'
 def libDescription = '布局注解框架'
 

@@ -46,14 +46,10 @@ class LayoutAnnPlugin : Plugin<Project> {
     }
 
 
-    // Parse the variant's main manifest file in order to get the package id which is used to create
-    // R.java in the right place.
     public fun getPackageName(variant: BaseVariant): String {
         val slurper = XmlSlurper(false, false)
         val list = variant.sourceSets.map { it.manifestFile }
 
-        // According to the documentation, the earlier files in the list are meant to be overridden by the later ones.
-        // So the first file in the sourceSets list should be main.
         val result = slurper.parse(list[0])
         return result.getProperty("@package").toString()
     }
@@ -70,8 +66,6 @@ class LayoutAnnPlugin : Plugin<Project> {
             variant.outputs.all { output ->
                 val processResources = output.processResources
                 task.dependsOn(processResources)
-                // Though there might be multiple outputs, their R files are all the same. Thus, we only
-                // need to configure the task once with the R.java input and action.
                 if (once.compareAndSet(false, true)) {
                     val pathToR = rPackage.replace('.', File.separatorChar)
                     val rFile = processResources.sourceOutputDir.resolve(pathToR).resolve("R.java")

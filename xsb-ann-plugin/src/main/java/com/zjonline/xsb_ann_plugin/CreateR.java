@@ -33,7 +33,7 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
 public class CreateR {
-    private static final String SUPPORT_ANNOTATION_PACKAGE = "android.support.annotation";
+    private static final String SUPPORT_ANNOTATION_PACKAGE = "androidx.annotation";
     private static final String[] SUPPORTED_TYPES = {
             "anim", "array", "attr", "bool", "color", "dimen", "drawable", "id", "integer", "layout", "menu", "plurals",
             "string", "style", "styleable", "mipmap"
@@ -73,8 +73,6 @@ public class CreateR {
         for (BodyDeclaration field : node.getMembers()) {
             if (field instanceof FieldDeclaration) {
                 FieldDeclaration declaration = (FieldDeclaration) field;
-                // Check that the field is an Int because styleable also contains Int arrays which can't be
-                // used in annotations.
                 if (isInt(declaration)) {
                     addResourceField(resourceType, declaration.getVariables().get(0),
                             getSupportAnnotationClass(type));

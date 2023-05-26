@@ -1,6 +1,9 @@
 apply plugin: 'java-library'
 apply plugin: 'maven'
-
+repositories {
+    jcenter()
+    mavenCentral()
+}
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -10,15 +13,12 @@ dependencies {
     compileOnly 'com.google.auto.service:auto-service:1.0-rc3'
     implementation 'com.squareup:javapoet:1.9.0'
     implementation 'com.google.auto:auto-common:0.8'
-    implementation 'com.google.android:android:4.1.1.4'
+    compileOnly 'com.google.android:android:4.1.1.4'
     implementation 'com.xsb.plugin:xsb-annotation:0.0.1-SNAPSHOT'//有注解和 绑定activity的
     compileOnly files(org.gradle.internal.jvm.Jvm.current().getToolsJar())
 }
 
-repositories {
-    jcenter()
-    mavenCentral()
-}
+
 def libVersion = '0.0.1-SNAPSHOT'
 def libArtifactId = 'xsb-processor'
 def libGroupId = 'com.xsb.plugin'
